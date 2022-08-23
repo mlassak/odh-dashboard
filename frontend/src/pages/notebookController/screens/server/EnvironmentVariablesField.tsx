@@ -53,8 +53,9 @@ const EnvironmentVariablesField: React.FC<EnvironmentVariablesFieldProps> = ({
           onChange={(newKey) =>
             onUpdateVariable({ name: newKey, type: variable.type, value: variable.value })
           }
-          value={variable.name === EMPTY_KEY ? '' : variable.name}
+          value={variable.name.match(`^${EMPTY_KEY}tmpId-[0-9][0-9]*-`) ? '' : variable.name}
           validated={validated}
+          autoComplete="on"
         />
       </FormGroup>
       <FormGroup fieldId={`${variable.name}-value`} label="Variable value">
@@ -71,6 +72,7 @@ const EnvironmentVariablesField: React.FC<EnvironmentVariablesFieldProps> = ({
               onChange={(newValue) =>
                 onUpdateVariable({ name: variable.name, type: variable.type, value: newValue })
               }
+              autoComplete="on"
             />
             {variable.type === 'password' ? (
               <Button variant="control" onClick={() => setShowPassword(!showPassword)}>

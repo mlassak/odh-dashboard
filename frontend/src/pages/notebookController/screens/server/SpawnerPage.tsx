@@ -85,6 +85,7 @@ const SpawnerPage: React.FC = React.memo(() => {
   const [createInProgress, setCreateInProgress] = React.useState<boolean>(false);
   const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(true);
   const [submitError, setSubmitError] = React.useState<Error | null>(null);
+  const [nextTmpEnvVarId, setNextTmpEnvVarId] = React.useState<number>(0);
 
   const onModalClose = () => {
     setStartShown(false);
@@ -224,6 +225,15 @@ const SpawnerPage: React.FC = React.memo(() => {
 
     updatedRows[index] = { ...updatedRow };
     updatedRows[index].errors = {};
+
+    for (const variable of updatedRow.variables) {
+      if (variable.name === '') {
+        updatedRows[index].errors[variable.name] = 'Variable name cannot be empty.';
+        setVariableRows(updatedRows);
+        return;
+      }
+    }
+
     for (let i = 0; i < updatedRows.length; i++) {
       if (i !== index) {
         updatedRow.variables.forEach((variable) => {
@@ -242,13 +252,14 @@ const SpawnerPage: React.FC = React.memo(() => {
       variableType: CUSTOM_VARIABLE,
       variables: [
         {
-          name: EMPTY_KEY,
+          name: EMPTY_KEY + `tmpId-${nextTmpEnvVarId}-`,
           type: 'text',
           value: '',
         },
       ],
       errors: {},
     };
+    setNextTmpEnvVarId(nextTmpEnvVarId + 1);
     setVariableRows([...variableRows, newRow]);
   };
 
